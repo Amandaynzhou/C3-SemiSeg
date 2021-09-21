@@ -1,9 +1,9 @@
-# C3-SemiSeg: Contrastive Semi-supervised Segmentation via Cross-set Learning and Dynamic Class-balancing
+# C3-SemiSeg:Contrastive Semi-supervised Segmentation via Cross-set Learning and Dynamic Class-balancing
 [![MIT License](https://img.shields.io/badge/license-MIT-green.svg)](https://opensource.org/licenses/MIT) 
 
 <!-- TOC -->
 
-- [C3-SemiSeg: Contrastive Semi-supervised Segmentation via Cross-set Learning and Dynamic Class-balancing](#C3-SemiSeg:Contrastive Semi-supervised Segmentation via Cross-set Learning and Dynamic Class-balancing)
+- [C3-SemiSeg:Contrastive Semi-supervised Segmentation via Cross-set Learning and Dynamic Class-balancing](#C3-SemiSeg:Contrastive Semi-supervised Segmentation via Cross-set Learning and Dynamic Class-balancing)
   - [Requirements](#requirements)
   - [Training](#training)
   - [Inference](#inference)
