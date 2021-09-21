@@ -3,7 +3,6 @@
 
 <!-- TOC -->
 
-- [C3-SemiSeg:Contrastive Semi-supervised Segmentation via Cross-set Learning and Dynamic Class-balancing](#C3-SemiSeg:Contrastive Semi-supervised Segmentation via Cross-set Learning and Dynamic Class-balancing)
   - [Requirements](#requirements)
   - [Training](#training)
   - [Inference](#inference)
