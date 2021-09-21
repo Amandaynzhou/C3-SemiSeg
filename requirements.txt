@@ -1,0 +1,14 @@
+numpy==1.14.5
+torch==1.4.0
+torchvision==0.5.0
+tqdm==4.43.0
+tensorboard==1.14.0
+Pillow==6.2.0
+opencv-python==4.1.0.25
+future
+higher
+cityscapesscripts
+pandas==0.24.2
+nuscenes-devkit
+thop==0.0.31.post2001170342
+easydict==1.9

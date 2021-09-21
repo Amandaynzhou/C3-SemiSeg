@@ -1,0 +1,143 @@
+{
+    "name": "DeepLabV2-bdd",
+    "n_gpu": 1,
+    "use_synch_bn": true,
+    "sync_group_nums": 1,
+
+    "arch": {
+        "type": "DeepLabV2",
+        "args": {
+            "backbone": "resnet101",
+            "pretrain_from": "imagenet",
+            "freeze_bn": true,
+            "freeze_backbone": false,
+            "return_feat_and_logit": false
+        }
+
+    },
+    "contrastive": {
+        "embed_dim": 256,
+        "contrastive_loss_weight": 1.0,
+        "rampup": 1000,
+        "start_epoch": 10,
+        "temperature":0.15,
+        "labeled": true,
+        "unlabeled": false,
+        "pixel_loss": false,
+        "p_head": "mlp"
+    },
+
+    "train_loader": {
+        "type": "BDD100K",
+        "args":{
+            "data_dir": "../dataset/bdd100k",
+            "batch_size":6,
+            "base_size": 1280,
+            "crop_size": [512, 512],
+            "num_samples": 8000,
+            "augment": true,
+            "shuffle": true,
+            "scale": false,
+            "flip": true,
+            "rotate": true,
+            "blur": false,
+            "split": "train",
+            "num_workers": 8,
+            "end_percent": 0.4,
+            "color_jitter": 0,
+            "random_grayscale": 0,
+            "gaussian_blur": 0,
+            "high": 720,
+            "scale_list": [0.75, 1.0, 1.25]
+        }
+    },
+
+    "unlabel_loader": {
+        "type": "PseudoBDD100K",
+        "args":{
+            "data_dir": "../dataset/bdd100k",
+            "batch_size":4,
+            "base_size": 1280,
+            "crop_size": [512, 512],
+            "num_samples": 8000,
+            "augment": true,
+            "shuffle": true,
+            "scale": false,
+            "flip": true,
+            "rotate": true,
+            "blur": false,
+            "split": "train",
+            "num_workers": 8,
+            "end_percent": 0.4,
+            "color_jitter": 1.0,
+            "random_grayscale": 0,
+            "gaussian_blur": 0,
+            "autoaug": false,
+            "high": 720,
+            "scale_list": [0.75, 1.0, 1.25]
+        }
+    },
+
+
+    "val_loader": {
+        "type": "BDD100K",
+        "args":{
+            "data_dir": "../dataset/bdd100k",
+            "batch_size": 4,
+            "base_size": 1280,
+            "crop_size": false,
+            "val": true,
+            "split": "val",
+            "num_workers": 4,
+            "end_percent": 0.4,
+            "high": 720,
+            "scale_list": [1.0]
+        }
+    },
+
+    "optimizer": {
+        "type": "Adam",
+        "differential_lr": true,
+
+        "args":{
+            "lr":2.5e-3,
+            "weight_decay": 5e-4,
+            "momentum": 0.9
+        }
+    },
+
+    "loss": "CrossEntropyLoss2d",
+    "ignore_index": 255,
+    "lr_scheduler": {
+        "type": "Poly",
+        "args": {
+            "iters_per_epoch": 2000
+        }
+    },
+
+    "trainer": {
+        "cutmix": false,
+        "epochs": 40,
+        "save_dir": "saved/",
+        "save_period": 40,
+        "cb_threshold": false,
+        "monitor": "max Mean_IoU",
+        "early_stop": 200,
+        "rampup":1000,
+        "tensorboard": true,
+        "log_dir": "saved/runs",
+        "log_per_iter": 20,
+        "pretrain_path": ".",
+        "val": true,
+        "val_per_epochs": 1,
+        "la":0.5,
+        "consist_weight": 50,
+        "ema": false,
+        "ema_alpha": 0.99 ,
+        "unlabel_start_epoch": 10,
+        "contrastive": true,
+        "gamma": 0.0
+
+    }
+
+}

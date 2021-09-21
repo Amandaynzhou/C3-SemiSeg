@@ -1,0 +1,145 @@
+{
+    "name": "DeepLabV2-pseudo",
+    "n_gpu": 1,
+    "use_synch_bn": true,
+    "sync_group_nums": 1,
+
+    "arch": {
+        "type": "DeepLabV2",
+        "args": {
+            "backbone": "resnet101",
+            "pretrain_from": "imagenet",
+            "freeze_bn": true,
+            "freeze_backbone": false,
+            "global_branch": false
+        }
+
+    },
+
+    "label_gen_loader": {
+        "type": "PseudoCityScapes",
+        "args":{
+            "data_dir": "../dataset/cityscapes",
+            "batch_size":4,
+            "base_size": 1024,
+            "crop_size": [256, 512],
+            "num_samples": 4000,
+            "augment": false,
+            "shuffle": false,
+            "scale": false,
+            "flip": true,
+            "rotate": true,
+            "blur": false,
+            "split": "train",
+            "num_workers": 8,
+            "pseudo_label_dir": "outputs/deepv2-baseline-ADAM/DeepLabV2-imagenet-bs4-freezeBN-longerlr3e-05_n_sup372_split12345/DeepLabV2-imagenet-bs4-freezeBN-longerlr3e-05_n_sup372_split12345_4_3e-0509-24_14",
+            "end_percent": 0.4
+        }
+    },
+    "train_loader": {
+        "type": "CityScapes",
+        "args":{
+            "data_dir": "../dataset/cityscapes",
+            "batch_size":6,
+            "base_size": 1024,
+            "crop_size": [256, 512],
+            "num_samples": 4000,
+            "augment": true,
+            "shuffle": true,
+            "scale": false,
+            "flip": true,
+            "rotate": true,
+            "blur": false,
+            "split": "train",
+            "num_workers": 8,
+            "pseudo_label_dir": ".",
+            "end_percent": 0.4,
+            "color_jitter": 0,
+            "random_grayscale": 0,
+            "gaussian_blur": 0
+        }
+    },
+
+    "unlabel_loader": {
+        "type": "PseudoCityScapes",
+        "args":{
+            "data_dir": "../dataset/cityscapes",
+            "batch_size":4,
+            "base_size": 1024,
+            "crop_size": [256, 512],
+            "num_samples": 4000,
+            "augment": true,
+            "shuffle": true,
+            "scale": false,
+            "flip": true,
+            "rotate": true,
+            "blur": false,
+            "split": "train",
+            "num_workers": 8,
+            "pseudo_label_dir": ".",
+            "end_percent": 0.4,
+            "color_jitter": 1.0,
+            "random_grayscale": 0.2,
+            "gaussian_blur": 11
+        }
+    },
+    "val_loader": {
+        "type": "CityScapes",
+        "args":{
+            "data_dir": "../dataset/cityscapes",
+            "batch_size": 6,
+            "base_size": 1024,
+            "crop_size": false,
+            "val": true,
+            "split": "val",
+            "num_workers": 4,
+            "pseudo_label_dir": ".",
+            "end_percent": 0.4
+        }
+    },
+
+    "optimizer": {
+        "type": "Adam",
+        "differential_lr": true,
+
+        "args":{
+            "lr":2.5e-3,
+            "weight_decay": 5e-4,
+            "momentum": 0.9
+        }
+    },
+
+    "loss": "CrossEntropyLoss2d",
+    "ignore_index": 255,
+    "lr_scheduler": {
+        "type": "Poly",
+        "args": {
+            "iters_per_epoch": 1000
+        }
+    },
+
+    "trainer": {
+
+        "epochs": 40,
+        "save_dir": "saved/",
+        "save_period": 10,
+        "cb_threshold": true,
+        "monitor": "max Mean_IoU",
+        "early_stop": 30,
+        "rampup":20000,
+        "tensorboard": true,
+        "log_dir": "saved/runs",
+        "log_per_iter": 20,
+        "pretrain_path": ".",
+        "global_branch": false,
+        "val": true,
+        "val_per_epochs": 1,
+        "la":0.5,
+        "consist_weight": 0.5,
+        "ema": false,
+        "ema_alpha": 0.99 ,
+        "start_ema_iter": 4000
+
+    }
+
+}
