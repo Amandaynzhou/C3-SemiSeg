@@ -15,11 +15,6 @@ from utils.checkpoint import load_state_dict
 from utils.dist_utils import synchronize, simple_group_split, convert_sync_bn, broadcast_value
 from utils.logger import setup_logger
 
-try:
-    import moxing as mox
-except:
-    pass
-
 
 def get_instance(module, name, config, *args):
     # GET THE CORRESPONDING CLASS / FCT
@@ -69,17 +64,7 @@ class BaseTrainer:
             temperature=self.config['contrastive']['temperature'],
             head=args.p_head,
         )
-        # if self.args.bucket == 'huabei':
-        #     self.mox_copy_writer_path = 's3://modelarts-ad/ynzhou/tensorboard_out'
-        # elif self.args.bucket == 'beijing':
-        #     # beijing
-        #     self.mox_copy_writer_path = 's3://bucket-mdcs/ynzhou/tensorboard_out'
-        # elif self.args.bucket == 'shanghai':
-        # self.mox_copy_writer_path = 's3://bucket-adas-shanghai/ynzhou/tensorboard_out'
-        self.mox_copy_writer_path = 's3://modelarts-ad/ynzhou/tensorboard_out'
-        self.mox_copy_writer_basename = start_time + _base_name
         self.checkpoint_dir = os.path.join(cfg_trainer['save_dir'], self.config['name'], start_time + _base_name)
-        self.mox_save_dir_name = start_time + _base_name
         if self.rank <= 0:
             helpers.dir_exists(self.checkpoint_dir)
         config_save_path = os.path.join(self.checkpoint_dir, 'config-deepv2.json')
@@ -143,8 +128,8 @@ class BaseTrainer:
         self.mnt_best = -math.inf if self.mnt_mode == 'max' else math.inf
 
     def _set_optimizer(self, config, ):
-        if self.rank<=0:
-            self.logger.info('set optim %s'%self.config['optimizer']['type'])
+        if self.rank <= 0:
+            self.logger.info('set optim %s' % self.config['optimizer']['type'])
         if self.config['optimizer']['differential_lr']:
             if isinstance(self.model, torch.nn.DataParallel) or isinstance(self.model,
                                                                            torch.nn.parallel.DistributedDataParallel):
@@ -187,12 +172,7 @@ class BaseTrainer:
         for epoch in range(self.start_epoch, self.epochs + 1):
             self.train_loader.dataset.set_epoch(epoch - 1)
             results = self._train_epoch(epoch)
-            if self.args.cloud:
-                self.logger.info(
-                    f'update tensorboard to {os.path.join(self.mox_copy_writer_path, self.mox_copy_writer_basename)}')
-                mox.file.copy_parallel(self.writer_dir,
-                                       os.path.join(self.mox_copy_writer_path, self.mox_copy_writer_basename))
-            synchronize()
+
             if self.rank <= 0:
                 # log for train data
                 self.logger.info(f'\n         ## Info for train epoch {epoch} ## ')
@@ -243,13 +223,6 @@ class BaseTrainer:
                 if self.contrastive:
                     self._save_embedding_module(epoch)
             synchronize()
-        # copy to s3
-        if self.args.cloud:
-            self.logger.info(
-                f'Copy best model to {os.path.join(self.mox_copy_writer_path, self.mox_copy_writer_basename)}')
-            mox.file.copy_parallel(os.path.join(self.checkpoint_dir, f'best_model.pth'),
-                                   os.path.join(self.mox_copy_writer_path, self.mox_copy_writer_basename,
-                                                'best_model.pth'))
 
     def _save_checkpoint(self, epoch, save_best=False):
         state = {

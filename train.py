@@ -191,7 +191,6 @@ if __name__ == '__main__':
     parser.add_argument('--contrastive_cross_model', action='store_true')
     parser.add_argument('--contrastive_cross_set', action='store_true')
     parser.add_argument('--hard_neg_num', default=64, type=int)
-    parser.add_argument('--bucket', default='huabei')
     parser.add_argument('--optimizer_type', default='Adam')
     parser.add_argument('--siam_weak', action='store_true')  # ablation study
     parser.add_argument('--siam_strong', action='store_true')  # ablation study
