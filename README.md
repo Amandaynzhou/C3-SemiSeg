@@ -16,7 +16,8 @@ This repo contains a PyTorch an implementation of $C^3$-SemiSeg: Contrastive Sem
 
 ![contents](./images/framework-c3seg.png)
 
-
+### Todo: 
+Clean up and re-check the code.
 
 ## Requirements
 PyTorch and Torchvision needs to be installed before running the scripts, together with `PIL` and `opencv` for data-preprocessing and `tqdm` for showing the training progress. PyTorch v1.4 is supported (using the new supported tensoboard).
