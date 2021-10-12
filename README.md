@@ -243,4 +243,7 @@ Config files are in `.json` format:
 ```
 ## Acknowledgement
 
-This repository utilizes the code from [https://github.com/yassouali/pytorch-segmentation](https://github.com/yassouali/pytorch-segmentation). 
+This repository utilizes the code from
+ [https://github.com/yassouali/pytorch-segmentation](https://github.com/yassouali/pytorch-segmentation). 
+ [https://github.com/tfzhou/ContrastiveSeg](https://github.com/tfzhou/ContrastiveSeg)
+ 
